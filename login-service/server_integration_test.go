@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	gen "github.com/marius/grpc-services/gen"
 	"github.com/marius/grpc-services/login"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc"
@@ -17,9 +18,10 @@ func init() {
 	const bufSize = 1024 * 1024
 	lis = bufconn.Listen(bufSize)
 	s := grpc.NewServer()
-	login.RegisterLoginServiceServer(s, &login.Server{
+	server := login.Server{
 		LoginService: NewService(),
-	})
+	}
+	gen.RegisterLoginServiceServer(s, &server)
 	go func() {
 		if err := s.Serve(lis); err != nil {
 			log.Fatalf("Server exited with error: %v", err)
@@ -38,9 +40,9 @@ func Test_LoginServer_responds_with_message_when_grpc_login_successful(t *testin
 		t.Fatalf("Failed to dial bufnet: %v", err)
 	}
 	defer conn.Close()
-	client := login.NewLoginServiceClient(conn)
+	client := gen.NewLoginServiceClient(conn)
 
-	loginResponse, err := client.Login(ctx, &login.UserRequest{
+	loginResponse, err := client.Login(ctx, &gen.UserRequest{
 		Name:     "Test",
 		LastName: "Test",
 		Email:    "marius.wichtner@email.com",
@@ -59,9 +61,9 @@ func Test_LoginServer_responds_with_error_when_grpc_login_unsuccessful(t *testin
 		t.Fatalf("Failed to dial bufnet: %v", err)
 	}
 	defer conn.Close()
-	client := login.NewLoginServiceClient(conn)
+	client := gen.NewLoginServiceClient(conn)
 
-	loginResponse, err := client.Login(ctx, &login.UserRequest{
+	loginResponse, err := client.Login(ctx, &gen.UserRequest{
 		Name:     "Test",
 		LastName: "Test",
 		Email:    "marius.wichtner@email.com",

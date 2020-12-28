@@ -1,4 +1,5 @@
 syntax = "proto3";
+
 package login;
 
 message UserRequest {
@@ -13,5 +14,6 @@ message LoginResponse {
 }
 
 service LoginService {
-  rpc Login(UserRequest) returns (LoginResponse) {}
+  rpc Login(UserRequest) returns (LoginResponse) {
+  }
 }
