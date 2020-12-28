@@ -1,17 +1,23 @@
 package main
 
 import (
-	"github.com/marius/moduleProject/login"
+	"github.com/marius/grpc-services/login"
 )
 
 func main() {
+	loginService := NewService()
+	setupProtocols(loginService)
+}
 
-	loginRepository := login.Repository{}
-	loginService := login.Service{
-		Repository: &loginRepository,
-	}
+func NewService() login.Service {
+	repository := login.Repository{}
+	service := login.Service{Repository: &repository}
+	return service
+}
 
-	setupRouter(
-		loginService,
-	).Run()
+func setupProtocols(loginService login.Service) {
+	go func() {
+		SetupRouter(loginService).Run()
+	}()
+	SetupGRPCServer(loginService)
 }

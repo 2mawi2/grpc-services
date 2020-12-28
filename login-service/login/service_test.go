@@ -41,7 +41,7 @@ func Test_isValidUser_should_return_true_for_authenticate_user(t *testing.T) {
 	// arrange
 	authenticatedUser := User{Name: "M", LastName: "W", Email: "marius.wichtner@email.com", Password: "secretPassword"}
 	// act
-	isAuthenticated := CreateService().isValidUser(authenticatedUser)
+	isAuthenticated := CreateService().IsValidUser(authenticatedUser)
 	// assert
 	assert.Equal(t, isAuthenticated, true)
 }
@@ -50,7 +50,7 @@ func Test_isValidUser_should_return_false_for_invalid_email(t *testing.T) {
 	// arrange
 	invalidEmailUser := User{Name: "M", LastName: "WWichtner", Email: "INVALID", Password: "secretPassword"}
 	// act
-	isAuthenticated := CreateService().isValidUser(invalidEmailUser)
+	isAuthenticated := CreateService().IsValidUser(invalidEmailUser)
 	// assert
 	assert.Equal(t, isAuthenticated, false)
 }
@@ -59,7 +59,7 @@ func Test_isValidUser_should_return_false_for_invalid_password(t *testing.T) {
 	// arrange
 	invalidPasswordUser := User{Name: "M", LastName: "W", Email: "marius.wichtner@email.com", Password: "INVALID"}
 	// act
-	isAuthenticated := CreateService().isValidUser(invalidPasswordUser)
+	isAuthenticated := CreateService().IsValidUser(invalidPasswordUser)
 	// assert
 	assert.Equal(t, isAuthenticated, false)
 }

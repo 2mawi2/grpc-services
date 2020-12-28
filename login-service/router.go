@@ -2,10 +2,10 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/marius/moduleProject/login"
+	"github.com/marius/grpc-services/login"
 )
 
-func setupRouter(
+func SetupRouter(
 	loginService login.Service,
 ) *gin.Engine {
 	router := gin.Default()

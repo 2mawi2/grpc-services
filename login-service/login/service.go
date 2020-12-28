@@ -8,7 +8,7 @@ type Service struct {
 	Repository IRepository
 }
 
-func (s *Service) isValidUser(loginUser User) bool {
+func (s *Service) IsValidUser(loginUser User) bool {
 	users := s.Repository.getAllUsers()
 	for _, user := range users {
 		isValidEmail := loginUser.Email == user.Email

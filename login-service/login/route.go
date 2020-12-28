@@ -21,7 +21,7 @@ func NewRoutesFactory(group *gin.RouterGroup) func(service Service) {
 				abortWithError(c, http.StatusBadRequest, "Missing user field.")
 			}
 
-			if !loginService.isValidUser(user) {
+			if !loginService.IsValidUser(user) {
 				abortWithError(c, http.StatusUnauthorized, "User is unauthorized.")
 			}
 
