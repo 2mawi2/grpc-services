@@ -32,7 +32,7 @@ func getTestExistingUsers() []User {
 
 func CreateService() *Service {
 	textExistingUsers := getTestExistingUsers()
-	repository.On("getAllUsers", mock.Anything).Return(textExistingUsers)
+	repository.On("GetAllUsers", mock.Anything).Return(textExistingUsers)
 	service := Service{Repository: repository}
 	return &service
 }

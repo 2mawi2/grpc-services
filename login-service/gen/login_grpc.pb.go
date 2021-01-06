@@ -17,7 +17,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type LoginServiceClient interface {
-	Login(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*LoginResponse, error)
+	Login(ctx context.Context, in *User, opts ...grpc.CallOption) (*LoginResponse, error)
+	GetUsersByRole(ctx context.Context, in *UserRoleRequest, opts ...grpc.CallOption) (*UserRoleResponse, error)
 }
 
 type loginServiceClient struct {
@@ -28,9 +29,18 @@ func NewLoginServiceClient(cc grpc.ClientConnInterface) LoginServiceClient {
 	return &loginServiceClient{cc}
 }
 
-func (c *loginServiceClient) Login(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*LoginResponse, error) {
+func (c *loginServiceClient) Login(ctx context.Context, in *User, opts ...grpc.CallOption) (*LoginResponse, error) {
 	out := new(LoginResponse)
 	err := c.cc.Invoke(ctx, "/login.LoginService/Login", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *loginServiceClient) GetUsersByRole(ctx context.Context, in *UserRoleRequest, opts ...grpc.CallOption) (*UserRoleResponse, error) {
+	out := new(UserRoleResponse)
+	err := c.cc.Invoke(ctx, "/login.LoginService/GetUsersByRole", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +51,8 @@ func (c *loginServiceClient) Login(ctx context.Context, in *UserRequest, opts ..
 // All implementations must embed UnimplementedLoginServiceServer
 // for forward compatibility
 type LoginServiceServer interface {
-	Login(context.Context, *UserRequest) (*LoginResponse, error)
+	Login(context.Context, *User) (*LoginResponse, error)
+	GetUsersByRole(context.Context, *UserRoleRequest) (*UserRoleResponse, error)
 	mustEmbedUnimplementedLoginServiceServer()
 }
 
@@ -49,8 +60,11 @@ type LoginServiceServer interface {
 type UnimplementedLoginServiceServer struct {
 }
 
-func (UnimplementedLoginServiceServer) Login(context.Context, *UserRequest) (*LoginResponse, error) {
+func (UnimplementedLoginServiceServer) Login(context.Context, *User) (*LoginResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
+}
+func (UnimplementedLoginServiceServer) GetUsersByRole(context.Context, *UserRoleRequest) (*UserRoleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUsersByRole not implemented")
 }
 func (UnimplementedLoginServiceServer) mustEmbedUnimplementedLoginServiceServer() {}
 
@@ -66,7 +80,7 @@ func RegisterLoginServiceServer(s grpc.ServiceRegistrar, srv LoginServiceServer)
 }
 
 func _LoginService_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserRequest)
+	in := new(User)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -78,7 +92,25 @@ func _LoginService_Login_Handler(srv interface{}, ctx context.Context, dec func(
 		FullMethod: "/login.LoginService/Login",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LoginServiceServer).Login(ctx, req.(*UserRequest))
+		return srv.(LoginServiceServer).Login(ctx, req.(*User))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LoginService_GetUsersByRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserRoleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LoginServiceServer).GetUsersByRole(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/login.LoginService/GetUsersByRole",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LoginServiceServer).GetUsersByRole(ctx, req.(*UserRoleRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -90,6 +122,10 @@ var _LoginService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Login",
 			Handler:    _LoginService_Login_Handler,
+		},
+		{
+			MethodName: "GetUsersByRole",
+			Handler:    _LoginService_GetUsersByRole_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

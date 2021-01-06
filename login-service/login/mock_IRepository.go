@@ -9,8 +9,8 @@ type MockIRepository struct {
 	mock.Mock
 }
 
-// getAllUsers provides a mock function with given fields:
-func (_m *MockIRepository) getAllUsers() []User {
+// GetAllUsers provides a mock function with given fields:
+func (_m *MockIRepository) GetAllUsers() []User {
 	ret := _m.Called()
 
 	var r0 []User
@@ -19,6 +19,22 @@ func (_m *MockIRepository) getAllUsers() []User {
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]User)
+		}
+	}
+
+	return r0
+}
+
+// GetUsersByRole provides a mock function with given fields: role
+func (_m *MockIRepository) GetUsersByRole(role UserRole) []*User {
+	ret := _m.Called(role)
+
+	var r0 []*User
+	if rf, ok := ret.Get(0).(func(UserRole) []*User); ok {
+		r0 = rf(role)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*User)
 		}
 	}
 

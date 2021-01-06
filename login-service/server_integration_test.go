@@ -42,7 +42,7 @@ func Test_LoginServer_responds_with_message_when_grpc_login_successful(t *testin
 	defer conn.Close()
 	client := gen.NewLoginServiceClient(conn)
 
-	loginResponse, err := client.Login(ctx, &gen.UserRequest{
+	loginResponse, err := client.Login(ctx, &gen.User{
 		Name:     "Test",
 		LastName: "Test",
 		Email:    "marius.wichtner@email.com",
@@ -63,7 +63,7 @@ func Test_LoginServer_responds_with_error_when_grpc_login_unsuccessful(t *testin
 	defer conn.Close()
 	client := gen.NewLoginServiceClient(conn)
 
-	loginResponse, err := client.Login(ctx, &gen.UserRequest{
+	loginResponse, err := client.Login(ctx, &gen.User{
 		Name:     "Test",
 		LastName: "Test",
 		Email:    "marius.wichtner@email.com",

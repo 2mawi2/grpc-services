@@ -20,12 +20,12 @@ func setupProtocols(loginService login.Service) {
 	wg := new(sync.WaitGroup)
 	wg.Add(2)
 	go func() {
-		SetupRouter(loginService).Run()
-		wg.Done()
-	}()
-	go func() {
 		SetupGRPCServer(loginService)
 		wg.Done()
 	}()
-	SetupGRPCGatewayEndpoint()
+	go func() {
+		SetupGRPCGatewayEndpoint()
+		wg.Done()
+	}()
+	wg.Wait()
 }
